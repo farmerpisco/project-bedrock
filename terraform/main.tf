@@ -2,11 +2,11 @@ terraform {
   required_version = ">= 1.0.0"
 
   backend "s3" {
-    bucket         = "starttech-state-bucket"
-    key            = "starttech/terraform.tfstate"
-    region         = "eu-west-2"
+    bucket         = "project-bedrock-state-bucket-1570"
+    key            = "project-bedrock/terraform.tfstate"
+    region         = "us-east-1"
     encrypt        = true
-    dynamodb_table = "starttech-terraform-locks"
+    use_lockfile   = true
   }
 
   required_providers {
@@ -28,6 +28,37 @@ terraform {
 provider "aws" {
   region = var.aws_region
 }
+
+module "networking" {
+  source = "./modules/networking"
+
+  project_name       = var.project_name
+  cidr_block         = var.cidr_block
+
+}
+
+module "eks" {
+  source = "./modules/eks"
+
+  project_name       = var.project_name
+  pb_sg_id          = module.networking.pb_sg_id
+  private_subnet_ids = module.networking.private_subnet_ids
+  instance_type      = var.instance_type
+
+}
+
+module "iam" {
+  source = "./modules/iam"
+
+}
+
+module "storage" {
+  source = "./modules/storage"
+
+  project_name = var.project_name
+}
+
+
 
 
 

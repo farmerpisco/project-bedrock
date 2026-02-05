@@ -8,9 +8,13 @@ resource "aws_vpc" "pb_vpc" {
   }
 }
 
+data "aws_availability_zones" "pb_az" {
+  state = "available"
+}
+
 resource "aws_subnet" "pb_public_subnet" {
   count                   = length(var.availability_zones)
-  availability_zone       = var.availability_zones[count.index]
+  availability_zone       = data.aws_availability_zones.pb_az.names[count.index]
   vpc_id                  = aws_vpc.pb_vpc.id
   cidr_block              = "cidrsubnet(var.cidr_block, 8, count.index)"
   map_public_ip_on_launch = true
@@ -24,12 +28,12 @@ resource "aws_subnet" "pb_public_subnet" {
 
 resource "aws_subnet" "pb_private_subnet" {
   count                   = length(var.availability_zones)
-  availability_zone       = var.availability_zones[count.index]
+  availability_zone       = data.aws_availability_zones.pb_az.names[count.index]
   vpc_id                  = aws_vpc.pb_vpc.id
   cidr_block              = "cidrsubnet(var.cidr_block, 8, count.index)"
 
   tags = {
-    Name                                                = "${var.project_name}-public-${count.index + 1}"
+    Name                                                = "${var.project_name}-private-${count.index + 1}"
     "kubernetes.io/role/elb"                            = "1"
     "kubernetes.io/cluster/${var.project_name}-cluster" = "shared"
   }
@@ -45,7 +49,6 @@ resource "aws_internet_gateway" "pb_igw" {
 
 resource "aws_eip" "pb_nat_eip" {
   vpc = aws_vpc.pb_vpc.id
-  count = length(var.availability_zones)
 
   tags = {
     Name = "${var.project_name}-nat-eip"
@@ -53,9 +56,8 @@ resource "aws_eip" "pb_nat_eip" {
 }
 
 resource "aws_nat_gateway" "pb_nat_gw" {
-  allocation_id = aws_eip.pb_nat_eip[count.index].id
-  subnet_id     = aws_subnet.pb_public_subnet[count.index].id
-  count         = length(var.availability_zones)
+  allocation_id = aws_eip.pb_nat_eip.id
+  subnet_id     = aws_subnet.pb_private_subnet[count.index].id
 
   tags = {
     Name = "${var.project_name}-nat-gateway"

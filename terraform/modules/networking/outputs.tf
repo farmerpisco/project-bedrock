@@ -1,11 +1,14 @@
 output "pb_vpc_id" {
-  value = aws_vpc.pb_vpc.id
+  description = "The ID of the VPC"
+  value      = aws_vpc.pb_vpc.id
 }
 
 output "pb_sg_id" {
-  value = aws_security_group.pb_sg.id
+  description = "The ID of the security group"
+  value       = aws_security_group.pb_sg.id
 }
 
 output "pb_private_subnets_ids" {
-  value = aws_subnet.pb_private_subnets[*].id
+  description = "List of private subnet IDs"
+  value       = aws_subnet.pb_private_subnets[*].id
 }

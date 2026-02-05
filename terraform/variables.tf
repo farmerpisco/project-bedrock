@@ -16,14 +16,8 @@ variable "project_name" {
   default     = "project-bedrock"
 }
 
-variable "availability_zones" {
-  description = "List of availability zones to use for subnets."
-  type        = list(string)
-  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
-}
-
-variable "instance_types" {
-  description = "The EC2 instance types to use for EKS worker nodes."
-  type        = list(string)
-  default     = ["t3.micro"]
+variable "instance_type" {
+  description = "The EC2 instance type to use for EKS worker nodes."
+  type        = string
+  default     = "t3.micro"
 }

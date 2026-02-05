@@ -13,7 +13,7 @@ variable "private_subnets_ids" {
   type = list(string)
 }
 
-variable "instance_types" {
-  description = "The EC2 instance types to use for EKS worker nodes."
-  type        = list(string)
+variable "instance_type" {
+  description = "The EC2 instance type to use for EKS worker nodes."
+  type        = string
 }

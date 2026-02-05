@@ -66,8 +66,8 @@ resource "aws_eks_node_group" "pb_eks_node_group" {
 
   instance_types = var.instance_types
   depends_on = [
-    aws_iam_role_policy_attachment.pb_eks_AmazonEKSWorkerNodePolicy
-    aws_iam_role_policy_attachment.pb_eks_AmazonEKS_CNI_Policy
+    aws_iam_role_policy_attachment.pb_eks_AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.pb_eks_AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.pb_eks_AmazonEC2ContainerRegistryReadOnly
   ]
 

@@ -9,6 +9,10 @@ terraform {
   }
 }
 
+provider "aws" {
+  region = "us-east-1"
+}
+
 resource "aws_s3_bucket" "pb_terraform_state" {
   bucket = "${var.project_name}-state-bucket-1570"
 
@@ -21,7 +25,7 @@ resource "aws_s3_bucket" "pb_terraform_state" {
 
 # Enable versioning so I can see the full revision history of the state files
 resource "aws_s3_bucket_versioning" "enabled" {
-  bucket = aws_s3_bucket.st_terraform_state.id
+  bucket = aws_s3_bucket.pb_terraform_state.id
   versioning_configuration {
     status = "Enabled"
   }
@@ -29,7 +33,7 @@ resource "aws_s3_bucket_versioning" "enabled" {
 
 # Enable server-side encryption by default
 resource "aws_s3_bucket_server_side_encryption_configuration" "default" {
-  bucket = aws_s3_bucket.st_terraform_state.id
+  bucket = aws_s3_bucket.pb_terraform_state.id
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
@@ -39,7 +43,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "default" {
 
 # Explicitly block all public access to the S3 bucket
 resource "aws_s3_bucket_public_access_block" "public_access" {
-  bucket                  = aws_s3_bucket.st_terraform_state.id
+  bucket                  = aws_s3_bucket.pb_terraform_state.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
