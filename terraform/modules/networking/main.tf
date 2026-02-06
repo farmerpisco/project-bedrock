@@ -1,5 +1,5 @@
 resource "aws_vpc" "pb_vpc" {
-  cidr_block = "var.cidr_block"
+  cidr_block           = var.cidr_block
   enable_dns_support   = true
   enable_dns_hostnames = true
 
@@ -13,29 +13,29 @@ data "aws_availability_zones" "pb_az" {
 }
 
 resource "aws_subnet" "pb_public_subnet" {
-  count                   = length(var.availability_zones)
+  count                   = 2
   availability_zone       = data.aws_availability_zones.pb_az.names[count.index]
   vpc_id                  = aws_vpc.pb_vpc.id
-  cidr_block              = "cidrsubnet(var.cidr_block, 8, count.index)"
+  cidr_block              = cidrsubnet(var.cidr_block, 8, count.index)
   map_public_ip_on_launch = true
 
   tags = {
-    Name                                                = "${var.project_name}-public-${count.index + 1}"
-    "kubernetes.io/role/elb"                            = "1"
-    "kubernetes.io/cluster/${var.project_name}-cluster" = "shared"
+    Name                                                    = "${var.project_name}-public-${count.index + 1}"
+    "kubernetes.io/role/elb"                                = "1"
+    "kubernetes.io/cluster/${var.project_name}-eks-cluster" = "shared"
   }
 }
 
 resource "aws_subnet" "pb_private_subnet" {
-  count                   = length(var.availability_zones)
-  availability_zone       = data.aws_availability_zones.pb_az.names[count.index]
-  vpc_id                  = aws_vpc.pb_vpc.id
-  cidr_block              = "cidrsubnet(var.cidr_block, 8, count.index)"
+  count             = 2
+  availability_zone = data.aws_availability_zones.pb_az.names[count.index]
+  vpc_id            = aws_vpc.pb_vpc.id
+  cidr_block        = cidrsubnet(var.cidr_block, 8, count.index + 10)
 
   tags = {
-    Name                                                = "${var.project_name}-private-${count.index + 1}"
-    "kubernetes.io/role/elb"                            = "1"
-    "kubernetes.io/cluster/${var.project_name}-cluster" = "shared"
+    Name                                                    = "${var.project_name}-private-${count.index + 1}"
+    "kubernetes.io/role/internal-elb"                       = "1"
+    "kubernetes.io/cluster/${var.project_name}-eks-cluster" = "shared"
   }
 }
 
@@ -48,20 +48,24 @@ resource "aws_internet_gateway" "pb_igw" {
 }
 
 resource "aws_eip" "pb_nat_eip" {
-  vpc = aws_vpc.pb_vpc.id
+  domain = "vpc"
 
   tags = {
     Name = "${var.project_name}-nat-eip"
   }
+
+  depends_on = [aws_internet_gateway.pb_igw]
 }
 
 resource "aws_nat_gateway" "pb_nat_gw" {
   allocation_id = aws_eip.pb_nat_eip.id
-  subnet_id     = aws_subnet.pb_private_subnet[count.index].id
+  subnet_id     = aws_subnet.pb_public_subnet[0].id
 
   tags = {
     Name = "${var.project_name}-nat-gateway"
   }
+
+  depends_on = [aws_internet_gateway.pb_igw]
 }
 
 resource "aws_route_table" "pb_public_rt" {
@@ -87,18 +91,18 @@ resource "aws_route_table" "pb_private_rt" {
   vpc_id = aws_vpc.pb_vpc.id
 
   route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.pb_nat_gw[count.index].id
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.pb_nat_gw.id
   }
   tags = {
-    Name = "${var.project_name}-private-rt-${count.index + 1}"
+    Name = "${var.project_name}-private-rt"
   }
 }
 
 resource "aws_route_table_association" "private" {
   count          = length(aws_subnet.pb_private_subnet)
   subnet_id      = aws_subnet.pb_private_subnet[count.index].id
-  route_table_id = aws_route_table.pb_private_rt[count.index].id
+  route_table_id = aws_route_table.pb_private_rt.id
 }
 
 resource "aws_security_group" "pb_sg" {
@@ -137,4 +141,31 @@ resource "aws_security_group" "pb_sg" {
   tags = {
     Name = "${var.project_name}-security-group"
   }
+}
+
+resource "aws_security_group" "pb_eks_cluster_sg" {
+  name        = "${var.project_name}-eks-cluster-sg"
+  description = "Security group for EKS cluster"
+  vpc_id      = aws_vpc.pb_vpc.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.project_name}-eks-cluster-sg"
+  }
+}
+
+resource "aws_security_group_rule" "cluster_ingress_workstation_https" {
+  description       = "Allow workstation to communicate with the cluster API Server"
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.pb_eks_cluster_sg.id
 }

@@ -2,7 +2,7 @@ resource "aws_s3_bucket" "pb_s3" {
   bucket = "bedrock-assets-1570"
 
   tags = {
-    Name        = "bedrock-assets-1570"
+    Name = "bedrock-assets-1570"
   }
 }
 
@@ -39,7 +39,7 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
 data "archive_file" "lambda" {
   type        = "zip"
   source_file = "bedrock_asset_processor.py"
-  output_path = "bedrock_asset_processor.zip"
+  output_path = "${path.root}/bedrock_asset_processor.zip"
 }
 
 resource "aws_lambda_function" "bedrock_asset_processor" {
@@ -55,7 +55,7 @@ resource "aws_lambda_function" "bedrock_asset_processor" {
 resource "aws_lambda_permission" "allow_s3" {
   statement_id  = "AllowS3Invoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.besdrock_asset_processor.function_name
+  function_name = aws_lambda_function.bedrock_asset_processor.function_name
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.pb_s3.arn
 }

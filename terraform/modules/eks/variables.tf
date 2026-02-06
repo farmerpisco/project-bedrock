@@ -5,15 +5,20 @@ variable "project_name" {
 
 variable "pb_sg_id" {
   description = "Security Group ID for EC2 instances"
-  type = string
+  type        = string
 }
 
-variable "private_subnets_ids" {
+variable "public_subnet_ids" {
+  description = "List of public subnet IDs"
+  type        = list(string)
+}
+
+variable "private_subnet_ids" {
   description = "List of private subnet IDs"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "instance_type" {
   description = "The EC2 instance type to use for EKS worker nodes."
-  type        = string
+  type        = list(string)
 }

@@ -2,11 +2,11 @@ terraform {
   required_version = ">= 1.0.0"
 
   backend "s3" {
-    bucket         = "project-bedrock-state-bucket-1570"
-    key            = "project-bedrock/terraform.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
-    use_lockfile   = true
+    bucket       = "project-bedrock-state-bucket-1570"
+    key          = "project-bedrock/terraform.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
+    use_lockfile = true
   }
 
   required_providers {
@@ -32,8 +32,8 @@ provider "aws" {
 module "networking" {
   source = "./modules/networking"
 
-  project_name       = var.project_name
-  cidr_block         = var.cidr_block
+  project_name = var.project_name
+  cidr_block   = var.cidr_block
 
 }
 
@@ -41,8 +41,9 @@ module "eks" {
   source = "./modules/eks"
 
   project_name       = var.project_name
-  pb_sg_id          = module.networking.pb_sg_id
-  private_subnet_ids = module.networking.private_subnet_ids
+  pb_sg_id           = module.networking.pb_sg_id
+  public_subnet_ids  = module.networking.pb_public_subnet_ids
+  private_subnet_ids = module.networking.pb_private_subnet_ids
   instance_type      = var.instance_type
 
 }
