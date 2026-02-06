@@ -48,10 +48,12 @@ jobs:
         run: |
           kubectl create namespace ${{ env.NAMESPACE }} || echo "Namespace '${{ env.NAMESPACE }}' already exists"
 
-      - name: Test chart pull
+      - name: Login to Public ECR
         run: |
-          helm pull oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart \
-            --version 1.4.0
+          aws ecr-public get-login-password --region ${{ env.AWS_REGION }} \
+          | helm registry login \
+          --username AWS \
+          --password-stdin public.ecr.aws
  
       - name: Deploy Frontend
         run: |
