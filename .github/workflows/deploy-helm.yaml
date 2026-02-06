@@ -47,6 +47,10 @@ jobs:
       - name: Create namespace
         run: |
           kubectl create namespace ${{ env.NAMESPACE }} || echo "Namespace '${{ env.NAMESPACE }}' already exists"
+
+      - name: Test chart pull
+        run: |
+          helm pull oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart:1.4.0
  
       - name: Deploy Frontend
         run: |
