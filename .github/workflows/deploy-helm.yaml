@@ -57,8 +57,7 @@ jobs:
  
       - name: Deploy Frontend
         run: |
-          helm install frontend oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart --version 1.4.0 \
-            --namespace ${{ env.NAMESPACE }} 
+          helm upgrade --install frontend   oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart   --version 1.4.0   --namespace retail-app -f value.yaml 
 
       - name: Deploy Catalog
         run: |
