@@ -125,8 +125,11 @@ resource "aws_iam_openid_connect_provider" "eks_oidc" {
 
 # Extract OIDC provider ID from the URL
 locals {
-  oidc_provider_arn = data.aws_iam_openid_connect_provider.eks_oidc.arn
-  oidc_provider_id  = element(split("/", data.aws_iam_openid_connect_provider.eks_oidc.url), length(split("/", data.aws_iam_openid_connect_provider.eks_oidc.url)) - 1)
+  oidc_provider_arn = aws_iam_openid_connect_provider.eks_oidc.arn
+  oidc_provider_id  = element(
+    split("/", aws_iam_openid_connect_provider.eks_oidc.url),
+    length(split("/", aws_iam_openid_connect_provider.eks_oidc.url)) - 1
+  )
 }
 
 # IAM role for EBS CSI Driver
