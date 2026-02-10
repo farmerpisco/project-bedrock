@@ -1,6 +1,6 @@
-output "vpc_id" {
-  description = "The ID of the VPC"
-  value       = module.networking.pb_vpc_id
+output "vpc_name" {
+  description = "The name of the VPC"
+  value       = module.networking.pb_vpc_name
 }
 
 output "eks_cluster_name" {

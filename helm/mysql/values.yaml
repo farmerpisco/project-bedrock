@@ -1,0 +1,26 @@
+image:
+  repository: mysql
+  tag: "8.0"
+  pullPolicy: IfNotPresent
+
+
+mysql:
+  rootPassword: rootpassword
+  database: bedrockdb
+  user: bedrockuser
+  password: bedrockpass
+
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClass: gp2
+
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 1
+    memory: 1Gi

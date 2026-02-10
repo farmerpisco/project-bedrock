@@ -3,6 +3,11 @@ output "pb_vpc_id" {
   value       = aws_vpc.pb_vpc.id
 }
 
+output "pb_vpc_name" {
+  description = "The name of the VPC"
+  value       = aws_vpc.pb_vpc.tags["Name"]
+}
+
 output "pb_sg_id" {
   description = "The ID of the security group"
   value       = aws_security_group.pb_sg.id

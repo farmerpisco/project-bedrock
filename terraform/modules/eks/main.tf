@@ -1,5 +1,14 @@
+resource "aws_cloudwatch_log_group" "eks_cluster_cwlg" {
+  name              = "/${var.project_name}/cluster-logs"
+  retention_in_days = 7
+
+  tags = {
+    Environment = "dev"
+    Name        = "${var.project_name}-logs"
+}
+
 resource "aws_eks_cluster" "pb_eks_cluster" {
-  name     = "${var.project_name}-eks-cluster"
+  name     = "${var.project_name}-cluster"
   role_arn = aws_iam_role.pb_eks_role.arn
 
   vpc_config {
@@ -19,6 +28,7 @@ resource "aws_eks_cluster" "pb_eks_cluster" {
 
   depends_on = [
     aws_iam_role_policy_attachment.pb_eks_AmazonEKSClusterPolicy
+    aws_cloudwatch_log_group.eks_cluster_cwlg
   ]
 
   tags = {

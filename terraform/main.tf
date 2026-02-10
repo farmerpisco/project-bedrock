@@ -48,6 +48,17 @@ module "eks" {
 
 }
 
+module "monitoring" {
+  source = "./modules/monitoring"
+  
+  project_name       = var.project_name
+  cluster_name       = module.eks.eks_cluster_name
+  oidc_provider_arn  = module.eks.oidc_provider_arn
+  oidc_provider_url  = module.eks.cluster_oidc_issuer_url
+  
+  depends_on = [module.eks]
+}
+
 module "iam" {
   source = "./modules/iam"
 
