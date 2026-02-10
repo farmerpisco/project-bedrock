@@ -17,7 +17,11 @@ resource "aws_eks_cluster" "pb_eks_cluster" {
   role_arn = aws_iam_role.pb_eks_role.arn
 
   vpc_config {
-    subnet_ids              = concat(var.private_subnet_ids, var.public_subnet_ids)
+    subnet_ids = concat(
+      var.private_subnet_ids, 
+      var.public_subnet_ids
+    )
+    
     security_group_ids      = [var.pb_sg_id]
     endpoint_private_access = true
     endpoint_public_access  = true
