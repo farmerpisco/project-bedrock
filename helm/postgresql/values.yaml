@@ -1,0 +1,23 @@
+replicaCount: 1
+
+image:
+  repository: postgres
+  tag: "15"
+  pullPolicy: IfNotPresent
+
+postgresql:
+  database: retail
+  username: retail_user
+  password: retail_pass
+  pgdata: /var/lib/postgresql/data/pgdata
+
+service:
+  type: ClusterIP
+  port: 5432
+
+persistence:
+  enabled: true
+  size: 8Gi
+  storageClass: gp2
+
+resources: {}
