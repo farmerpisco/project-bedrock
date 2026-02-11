@@ -2,16 +2,18 @@ service:
   type: ClusterIP
   port: 8080
 
-dynamodb:
-  enabled: true
-  auth:
-    database: bedrockdb
-    username: bedrockuser
-    password: bedrockpass
-  primary:
-    persistence:
-      enabled: true
-      size: 4Gi
+env:
+  - name: RETAIL_CART_PERSISTENCE_PROVIDER
+    value: dynamodb
+  
+  - name: RETAIL_CART_PERSISTENCE_DYNAMODB_ENDPOINT
+    value: http://dynamodb-dynamodb-local:8000
+
+  - name: RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME
+    value: Items
+
+  - name: RETAIL_CART_PERSISTENCE_DYNAMODB_CREATE_TABLE
+    value: "true"
 
 resources:
   limits:

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dynamodb.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "dynamodb.name" . }}
+    helm.sh/chart: {{ include "dynamodb.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "dynamodb.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "dynamodb.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+
+    spec:
+      containers:
+        - name: dynamodb-local
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+
+          args:
+            - "-jar"
+            - "DynamoDBLocal.jar"
+            - "-sharedDb"
+            - "-dbPath"
+            - "/data"
+
+          resources:
+            requests:
+              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ .Values.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ .Values.resources.limits.cpu }}
+
+          volumeMounts:
+            - name: dynamodb-data
+              mountPath: /data
+
+      volumes:
+        - name: dynamodb-data
+          persistentVolumeClaim:
+            claimName: {{ include "dynamodb.fullname" . }}-pvc

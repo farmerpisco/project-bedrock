@@ -6,9 +6,9 @@ image:
   pullPolicy: IfNotPresent
 
 postgresql:
-  database: retail
-  username: retail_user
-  password: retail_pass
+  database: bedrockdb
+  username: bedrockuser
+  password: bedrockpass
   pgdata: /var/lib/postgresql/data/pgdata
 
 service:

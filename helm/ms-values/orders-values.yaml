@@ -2,16 +2,33 @@ service:
   type: ClusterIP
   port: 8080
 
-postgresql:
-  enabled: true
-  auth:
-    database: bedrockdb
-    username: bedrockuser
-    password: bedrockpass
-  primary:
-    persistence:
-      enabled: true
-      size: 4Gi
+env:
+  - name: RETAIL_ORDERSSTENCE_PROVIDER
+    value: postgres
+
+  - name: RETAIL_ORDERS_PERSISTENCE_ENDPOINT
+    value: postgresql
+
+  - name: RETAIL_ORDERS_PERSISTENCE_DB_NAME
+    value: bedrockdb
+
+  - name: RETAIL_ORDERS_PERSISTENCE_USER
+    value: bedrockuser
+
+  - name: RETAIL_ORDERS_PERSISTENCE_PASSWORD
+    value: bedrockpass
+
+  - name: RETAIL_ORDERS_MESSAGING_PROVIDER
+    value: rabbitmq
+
+  - name: RETAIL_ORDERS_MESSAGING_RABBITMQ_ADDRESSES
+    value: rabbitmq:5672
+
+  - name: RETAIL_ORDERS_MESSAGING_RABBITMQ_USERNAME
+    value: bedrockuser
+
+  - name: RETAIL_ORDERS_MESSAGING_RABBITMQ_PASSWORD
+    value: bedrockpass
 
 resources:
   limits:

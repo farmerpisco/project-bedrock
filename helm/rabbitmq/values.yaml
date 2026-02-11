@@ -1,0 +1,26 @@
+image:
+  repository: rabbitmq
+  tag: 3.13-management
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  amqpPort: 5672
+  managementPort: 15672
+
+auth:
+  username: bedrockuser
+  password: bedrockpass
+  
+persistence:
+  enabled: true
+  size: 8Gi
+  storageClass: gp2
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"

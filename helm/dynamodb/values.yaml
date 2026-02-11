@@ -1,0 +1,21 @@
+image:
+  repository: amazon/dynamodb-local
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+
+persistence:
+  enabled: true
+  size: 8Gi
+  storageClass: gp2
+  
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "250m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
