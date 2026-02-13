@@ -28,9 +28,9 @@ resource "aws_eks_cluster" "pb_eks_cluster" {
     endpoint_public_access  = true
   }
 
-  # access_config {
-  #   authentication_mode = "API_AND_CONFIG_MAP"
-  # }
+  access_config {
+    authentication_mode = "API_AND_CONFIG_MAP"
+  }
 
   enabled_cluster_log_types = [
     "api",
