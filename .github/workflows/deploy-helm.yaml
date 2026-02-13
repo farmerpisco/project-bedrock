@@ -48,34 +48,37 @@ jobs:
         run: |
           kubectl create namespace ${{ env.NAMESPACE }} || echo "Namespace '${{ env.NAMESPACE }}' already exists"
 
-      - name: Debug Network
-        run: |
-          echo "=== Testing DNS Resolution ==="
-          nslookup public.ecr.aws
-          dig public.ecr.aws
-          
-          echo "=== Testing Connectivity ==="
-          curl -I https://public.ecr.aws/v2/
-          
-          echo "=== AWS Credentials Check ==="
-          aws sts get-caller-identity
+      - name: Login to ECR Public
+        uses: aws-actions/amazon-ecr-login@v2
+        with:
+          registry-type: public
 
-      - name: Deploy Frontend Chart
-        env:
-          AWS_DEFAULT_REGION: us-east-1
+      - name: Pull and Install Helm Chart
         run: |
           export HELM_EXPERIMENTAL_OCI=1
-          
-          # Get token and login in one step
-          export HELM_REGISTRY_PASSWORD=$(aws ecr-public get-login-password --region us-east-1)
-          echo $HELM_REGISTRY_PASSWORD | helm registry login --username AWS --password-stdin public.ecr.aws
-          
-          helm upgrade --install frontend \
-            oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart \
-            --version 1.4.0 \
-            --namespace ${{ env.NAMESPACE }} \
-            --create-namespace \
-            -f ./helm/ms-values/frontend-values.yaml
+          helm pull oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart \
+            --version 1.4.0 --untar
+          helm upgrade --install frontend ./retail-store-sample-ui-chart \
+            --namespace retail-app \
+            -f ./ms-values/frontend-values.yaml
+
+
+      # - name: Login to Public ECR
+      #   run: |
+      #     aws ecr-public get-login-password --region ${{ env.AWS_REGION }} \
+      #     | helm registry login --username AWS --password-stdin public.ecr.aws
+ 
+      # -  name: Deploy with Helm
+      #    uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
+      #    with:
+      #      aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+      #      aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+      #      aws-region: ${{ env.AWS_REGION }}
+      #      cluster-name: ${{ env.EKS_CLUSTER_NAME }}
+      #      chart-path: public.ecr.aws/aws-containers/retail-store-sample-ui-chart:1.4.0
+      #      namespace: ${{ env.NAMESPACE }}
+      #      values: ./helm/ms-values/frontend-values.yaml
+      #      name: frontend
 
       # - name: Deploy Catalog
       #   run: |
