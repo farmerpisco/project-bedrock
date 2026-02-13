@@ -144,4 +144,11 @@ jobs:
 
       - name: Terraform destroy
         id: destroy
+        env:
+          TF_VAR_project_name: ${{ vars.PROJECT_NAME }}
+          TF_VAR_cidr_block: ${{ vars.CIDR_BLOCK }}
+          TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+          TF_VAR_instance_type: ${{ vars.INSTANCE_TYPE }}
+          TF_VAR_db_username: ${{ secrets.DB_USERNAME }}
+          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
         run: terraform destroy --auto-approve -input=false
