@@ -1,5 +1,6 @@
 resource "aws_secretsmanager_secret" "pb_db_username" {
-  name = "${var.project_name}-db-username"
+  name                    = "${var.project_name}-db-username"
+  recovery_window_in_days = 0
 
   tags = {
     Name = "${var.project_name}-db-username"
@@ -12,7 +13,8 @@ resource "aws_secretsmanager_secret_version" "pb_db_username_version" {
 }
 
 resource "aws_secretsmanager_secret" "pb_db_password" {
-  name = "${var.project_name}-db-password"
+  name                    = "${var.project_name}-db-password"
+  recovery_window_in_days = 0
 
   tags = {
     Name = "${var.project_name}-db-password"

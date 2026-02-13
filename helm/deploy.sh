@@ -4,9 +4,14 @@ aws eks update-kubeconfig \
 --name project-bedrock-cluster \
 --region us-east-1
 
-aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
+aws ecr-public get-login-password \
+--region us-east-1 | \
+helm registry login --username AWS \
+--password-stdin public.ecr.aws
 
 kubectl create namespace retail-app
+
+echo "================================"
 
 helm upgrade --install redis ./redis -n retail-app
 

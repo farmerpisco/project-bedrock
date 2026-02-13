@@ -13,6 +13,11 @@ output "eks_cluster_endpoint" {
   value       = module.eks.eks_cluster_endpoint
 }
 
+output "aws_region" {
+  description = "AWS region"
+  value       = var.aws_region
+}
+
 output "iam_username" {
   description = "The name of the IAM user"
   value       = module.iam.iam_username

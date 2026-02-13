@@ -18,21 +18,12 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "~> 2.38"
     }
-    # helm = {
-    #   source  = "hashicorp/helm"
-    #   version = "~> 2.16"
-    # }
   }
 }
 
 provider "aws" {
   region = var.aws_region
 }
-
-# provider "kubernetes" {
-#   host                   = module.eks.eks_cluster_endpoint
-#   cluster_ca_certificate = base64decode(module.eks.cluster_ca)
-# }
 
 module "networking" {
   source = "./modules/networking"
@@ -67,7 +58,8 @@ module "monitoring" {
 module "iam" {
   source = "./modules/iam"
 
-  s3_bucket_arn = module.storage.s3_bucket_arn
+  s3_bucket_arn    = module.storage.s3_bucket_arn
+  eks_cluster_name = module.eks.eks_cluster_name
 
 }
 
