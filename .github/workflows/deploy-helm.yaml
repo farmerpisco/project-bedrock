@@ -51,9 +51,13 @@ jobs:
       - name: Login to Public ECR
         run: |
           export HELM_EXPERIMENTAL_OCI=1
+
           aws ecr-public get-login-password --region ${{ env.AWS_REGION }} \
           | helm registry login --username AWS --password-stdin public.ecr.aws
-
+          
+          helm pull oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart \
+          --version 1.4.0
+          
           helm upgrade --install frontend \
           oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart \
           --version 1.4.0 \
