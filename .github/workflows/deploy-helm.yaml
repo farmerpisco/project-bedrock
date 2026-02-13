@@ -41,16 +41,16 @@ jobs:
       - name: Install Helm
         uses: azure/setup-helm@v3
         with:
-          version: v3.13.0
+          version: '3.14.0'
 
-      - name: Create namespace
-        run: |
-          kubectl create namespace ${{ env.NAMESPACE }} || echo "Namespace '${{ env.NAMESPACE }}' already exists"
+      # - name: Create namespace
+      #   run: |
+      #     kubectl create namespace ${{ env.NAMESPACE }} || echo "Namespace '${{ env.NAMESPACE }}' already exists"
 
-      - name: Login to ECR Public
-        run: |
-          aws ecr-public get-login-password --region ${{ env.AWS_REGION }} \
-          | helm registry login --username AWS --password-stdin public.ecr.aws
+      # - name: Login to ECR Public
+      #   run: |
+      #     aws ecr-public get-login-password --region ${{ env.AWS_REGION }} \
+      #     | helm registry login --username AWS --password-stdin public.ecr.aws
 
       - name: Change to helm directory
         run: |
