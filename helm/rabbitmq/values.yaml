@@ -9,8 +9,8 @@ service:
   managementPort: 15672
 
 auth:
-  username: bedrockuser
-  password: bedrockpass
+  username: 
+  password: 
   
 persistence:
   enabled: true

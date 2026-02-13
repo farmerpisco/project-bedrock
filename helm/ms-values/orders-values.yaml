@@ -7,16 +7,16 @@ env:
     value: postgres
 
   - name: RETAIL_ORDERS_PERSISTENCE_ENDPOINT
-    value: postgresql
+    value: project-bedrock-postgresql20260213001333680500000001.cmvmoygy4sqk.us-east-1.rds.amazonaws.com:5432
 
   - name: RETAIL_ORDERS_PERSISTENCE_DB_NAME
-    value: bedrockdb
+    value: bedrock_order_db
 
   - name: RETAIL_ORDERS_PERSISTENCE_USER
-    value: bedrockuser
+    value: 
 
   - name: RETAIL_ORDERS_PERSISTENCE_PASSWORD
-    value: bedrockpass
+    value: 
 
   - name: RETAIL_ORDERS_MESSAGING_PROVIDER
     value: rabbitmq
@@ -25,10 +25,10 @@ env:
     value: rabbitmq:5672
 
   - name: RETAIL_ORDERS_MESSAGING_RABBITMQ_USERNAME
-    value: bedrockuser
+    value: 
 
   - name: RETAIL_ORDERS_MESSAGING_RABBITMQ_PASSWORD
-    value: bedrockpass
+    value: 
 
 resources:
   limits:

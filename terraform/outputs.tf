@@ -39,3 +39,23 @@ output "lambda_function_name" {
   description = "Name of the Lambda function for asset processing"
   value       = module.storage.lambda_function_name
 }
+
+output "endpoint_mysql" {
+  description = "The endpoint of the MySQL RDS instance"
+  value       = module.rds.endpoint_mysql
+}
+
+output "port_mysql" {
+  description = "The port of the MySQL RDS instance"
+  value       = module.rds.port_mysql
+}
+
+output "endpoint_postgresql" {
+  description = "The endpoint of the PostgreSQL RDS instance"
+  value       = module.rds.endpoint_postgresql
+}
+
+output "port_postgresql" {
+  description = "The port of the PostgreSQL RDS instance"
+  value       = module.rds.port_postgresql
+}

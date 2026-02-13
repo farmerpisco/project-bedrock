@@ -1,6 +1,0 @@
-apiVersion: v2
-name: mysql
-description: Minimal MySQL Helm chart using official image
-type: application
-version: 0.1.0
-appVersion: "8.0"

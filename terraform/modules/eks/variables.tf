@@ -3,8 +3,8 @@ variable "project_name" {
   type        = string
 }
 
-variable "pb_sg_id" {
-  description = "Security Group ID for EC2 instances"
+variable "pb_eks_cluster_sg_id" {
+  description = "Security Group ID for EKS cluster"
   type        = string
 }
 

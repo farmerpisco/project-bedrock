@@ -7,16 +7,16 @@ env:
     value: mysql
 
   - name: RETAIL_CATALOG_PERSISTENCE_ENDPOINT
-    value: mysql
+    value: project-bedrock-mysql20260213001333680600000002.cmvmoygy4sqk.us-east-1.rds.amazonaws.com:3306
 
   - name: RETAIL_CATALOG_PERSISTENCE_DB_NAME
-    value: bedrockdb
+    value: bedrock_catalog_db
 
   - name: RETAIL_CATALOG_PERSISTENCE_USER
-    value: bedrockuser
+    value: 
 
   - name: RETAIL_CATALOG_PERSISTENCE_PASSWORD
-    value: bedrockpass
+    value: 
 
 resources:
   limits:

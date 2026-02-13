@@ -111,13 +111,6 @@ resource "aws_security_group" "pb_sg" {
   vpc_id      = aws_vpc.pb_vpc.id
 
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -148,6 +141,13 @@ resource "aws_security_group" "pb_eks_cluster_sg" {
   description = "Security group for EKS cluster"
   vpc_id      = aws_vpc.pb_vpc.id
 
+  ingress {
+    from_port   = 433
+    to_port     = 433
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -160,12 +160,43 @@ resource "aws_security_group" "pb_eks_cluster_sg" {
   }
 }
 
-resource "aws_security_group_rule" "cluster_ingress_workstation_https" {
-  description       = "Allow workstation to communicate with the cluster API Server"
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.pb_eks_cluster_sg.id
+resource "aws_security_group" "pb_rds_sg" {
+  name   = "${var.project_name}-rds-sg"
+  vpc_id = aws_vpc.pb_vpc.id
+
+  ingress {
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = [aws_security_group.pb_eks_cluster_sg.id]
+  }
+
+  ingress {
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [aws_security_group.pb_eks_cluster_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.project_name}-rds-sg"
+  }
 }
+
+resource "aws_db_subnet_group" "pb_rds_subnet_group" {
+  name       = "${var.project_name}-rds-subnet-group"
+  subnet_ids = aws_subnet.pb_private_subnet[*].id
+
+  tags = {
+    Name = "${var.project_name}-rds-subnet-group"
+  }
+}
+
+

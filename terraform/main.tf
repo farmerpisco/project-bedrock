@@ -1,27 +1,27 @@
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = ">= 1.8.0"
 
   backend "s3" {
     bucket       = "project-bedrock-state-bucket-1570"
     key          = "project-bedrock/terraform.tfstate"
     region       = "us-east-1"
     encrypt      = true
-    # use_lockfile = true
+    use_lockfile = true
   }
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "6.28.0"
+      version = "6.32.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.3"
+      version = "~> 2.38"
     }
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 2.16"
-    }
+    # helm = {
+    #   source  = "hashicorp/helm"
+    #   version = "~> 2.16"
+    # }
   }
 }
 
@@ -45,22 +45,22 @@ module "networking" {
 module "eks" {
   source = "./modules/eks"
 
-  project_name       = var.project_name
-  pb_sg_id           = module.networking.pb_sg_id
-  public_subnet_ids  = module.networking.pb_public_subnet_ids
-  private_subnet_ids = module.networking.pb_private_subnet_ids
-  instance_type      = var.instance_type
+  project_name         = var.project_name
+  pb_eks_cluster_sg_id = module.networking.pb_eks_cluster_sg_id
+  public_subnet_ids    = module.networking.pb_public_subnet_ids
+  private_subnet_ids   = module.networking.pb_private_subnet_ids
+  instance_type        = var.instance_type
 
 }
 
 module "monitoring" {
   source = "./modules/monitoring"
-  
-  project_name       = var.project_name
-  cluster_name       = module.eks.eks_cluster_name
-  oidc_provider_arn  = module.eks.oidc_provider_arn
-  oidc_provider_url  = module.eks.cluster_oidc_issuer_url
-  
+
+  project_name      = var.project_name
+  cluster_name      = module.eks.eks_cluster_name
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  oidc_provider_url = module.eks.cluster_oidc_issuer_url
+
   depends_on = [module.eks]
 }
 
@@ -75,5 +75,27 @@ module "storage" {
   source = "./modules/storage"
 
   project_name = var.project_name
+}
+
+module "secret-manager" {
+  source = "./modules/secret-manager"
+
+  project_name = var.project_name
+  db_username  = var.db_username
+  db_password  = var.db_password
+}
+
+module "rds" {
+  source = "./modules/rds"
+
+  project_name = var.project_name
+  db_username  = var.db_username
+  db_password  = var.db_password
+
+  pb_rds_sg_id             = module.networking.pb_rds_sg_id
+  pb_rds_subnet_group_name = module.networking.pb_rds_subnet_group_name
+
+  depends_on = [module.networking, module.secret-manager]
+
 }
 

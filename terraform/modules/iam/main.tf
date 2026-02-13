@@ -40,19 +40,19 @@ resource "aws_iam_user_login_profile" "credentials" {
   password_reset_required = false
 }
 
-resource "kubernetes_config_map" "aws_auth" {
-  metadata {
-    name      = "aws-auth"
-    namespace = "kube-system"
-  }
+# resource "kubernetes_config_map" "aws_auth" {
+#   metadata {
+#     name      = "aws-auth"
+#     namespace = "kube-system"
+#   }
 
-  data = {
-    mapUsers = yamlencode([
-      {
-        userarn  = aws_iam_user.iam_user.arn
-        username = "bedrock-dev-view"
-        groups   = ["view"]  
-      }
-    ])
-  }
-}
+#   data = {
+#     mapUsers = yamlencode([
+#       {
+#         userarn  = aws_iam_user.iam_user.arn
+#         username = "bedrock-dev-view"
+#         groups   = ["view"]  
+#       }
+#     ])
+#   }
+# }

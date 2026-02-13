@@ -15,6 +15,7 @@ resource "aws_cloudwatch_log_group" "eks_cluster_cwlg" {
 resource "aws_eks_cluster" "pb_eks_cluster" {
   name     = "${var.project_name}-cluster"
   role_arn = aws_iam_role.pb_eks_role.arn
+  version  = "1.34"
 
   vpc_config {
     subnet_ids = concat(
@@ -22,7 +23,7 @@ resource "aws_eks_cluster" "pb_eks_cluster" {
       var.public_subnet_ids
     )
     
-    security_group_ids      = [var.pb_sg_id]
+    security_group_ids      = [var.pb_eks_cluster_sg_id]
     endpoint_private_access = true
     endpoint_public_access  = true
   }

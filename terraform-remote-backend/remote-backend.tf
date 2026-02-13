@@ -19,7 +19,7 @@ resource "aws_s3_bucket" "pb_terraform_state" {
   # Prevent accidental deletion of this S3 bucket
   # Comment-out when you want to destroy resources
   lifecycle {
-    prevent_destroy      = true
+    prevent_destroy = true
   }
 }
 
@@ -48,15 +48,4 @@ resource "aws_s3_bucket_public_access_block" "public_access" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}
-
-# Create DynamoDB teble for locking
-resource "aws_dynamodb_table" "terraform_lock" {
-  name         = "${var.project_name}-terraform-locks"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
 }

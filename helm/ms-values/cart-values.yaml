@@ -10,7 +10,7 @@ env:
     value: http://dynamodb-dynamodb-local:8000
 
   - name: RETAIL_CART_PERSISTENCE_DYNAMODB_TABLE_NAME
-    value: Items
+    value: bedrock-cart-db
 
   - name: RETAIL_CART_PERSISTENCE_DYNAMODB_CREATE_TABLE
     value: "true"

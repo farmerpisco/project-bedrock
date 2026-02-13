@@ -1,0 +1,11 @@
+aws_region = 
+
+project_name = 
+
+cidr_block = 
+
+instance_type = 
+
+db_username = 
+
+db_password = 
