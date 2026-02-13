@@ -52,17 +52,15 @@ jobs:
         run: |
           export HELM_EXPERIMENTAL_OCI=1
 
-          aws ecr-public get-login-password --region ${{ env.AWS_REGION }} \
-          | helm registry login --username AWS --password-stdin public.ecr.aws
-          
-          aws ecr-public describe-repositories --region us-east-1 | grep retail-store
-          
-          helm pull oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart \
-          --version 1.4.0
+          aws ecr-public get-login-password --region ${{ env.AWS_REGION }} | \
+            helm registry login --username AWS --password-stdin public.ecr.aws
 
-          helm upgrade --install frontend ./retail-store-sample-ui-chart \
-          --namespace retail-app \
-          -f ./ms-values/frontend-values.yaml 
+          helm upgrade --install frontend \
+            oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart \
+            --version 1.4.0 \
+            --namespace ${{ env.NAMESPACE }} \
+            --create-namespace \
+            -f ./ms-values/frontend-values.yaml
 
       # - name: Deploy Catalog
       #   run: |
