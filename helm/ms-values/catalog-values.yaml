@@ -7,7 +7,7 @@ env:
     value: mysql
 
   - name: RETAIL_CATALOG_PERSISTENCE_ENDPOINT
-    value: project-bedrock-mysql20260213104821097600000005.cmvmoygy4sqk.us-east-1.rds.amazonaws.com:3306
+    value: project-bedrock-mysql2026021320562769780000000b.cmvmoygy4sqk.us-east-1.rds.amazonaws.com:3306
 
   - name: RETAIL_CATALOG_PERSISTENCE_DB_NAME
     value: bedrock_catalog_db

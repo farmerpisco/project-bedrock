@@ -7,7 +7,7 @@ env:
     value: postgres
 
   - name: RETAIL_ORDERS_PERSISTENCE_ENDPOINT
-    value: project-bedrock-postgresql20260213104821097600000006.cmvmoygy4sqk.us-east-1.rds.amazonaws.com:5432
+    value: project-bedrock-postgresql2026021320562769780000000a.cmvmoygy4sqk.us-east-1.rds.amazonaws.com:5432
 
   - name: RETAIL_ORDERS_PERSISTENCE_DB_NAME
     value: bedrock_order_db
