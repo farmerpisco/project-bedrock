@@ -56,7 +56,7 @@ jobs:
             helm registry login --username AWS --password-stdin public.ecr.aws
 
           helm upgrade --install frontend \
-            oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart \
+            oci://public.ecr.aws/aws-containers/retail-store-sample-ui \
             --version 1.4.0 \
             --namespace ${{ env.NAMESPACE }} \
             --create-namespace \
