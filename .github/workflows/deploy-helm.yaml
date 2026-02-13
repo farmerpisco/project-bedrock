@@ -57,10 +57,8 @@ jobs:
           
           helm pull oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart \
           --version 1.4.0
-          
-          helm upgrade --install frontend \
-          oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart \
-          --version 1.4.0 \
+
+          helm upgrade --install frontend ./retail-store-sample-ui-chart \
           --namespace retail-app \
           -f ./ms-values/frontend-values.yaml 
 
