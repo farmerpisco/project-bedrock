@@ -48,6 +48,18 @@ jobs:
         run: |
           kubectl create namespace ${{ env.NAMESPACE }} || echo "Namespace '${{ env.NAMESPACE }}' already exists"
 
+      - name: Debug Network
+        run: |
+          echo "=== Testing DNS Resolution ==="
+          nslookup public.ecr.aws
+          dig public.ecr.aws
+          
+          echo "=== Testing Connectivity ==="
+          curl -I https://public.ecr.aws/v2/
+          
+          echo "=== AWS Credentials Check ==="
+          aws sts get-caller-identity
+
       - name: Deploy Frontend Chart
         env:
           AWS_DEFAULT_REGION: us-east-1
