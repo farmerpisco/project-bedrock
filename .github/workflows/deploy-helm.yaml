@@ -55,6 +55,8 @@ jobs:
           aws ecr-public get-login-password --region ${{ env.AWS_REGION }} \
           | helm registry login --username AWS --password-stdin public.ecr.aws
           
+          aws ecr-public describe-repositories --region us-east-1 | grep retail-store
+          
           helm pull oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart \
           --version 1.4.0
 
