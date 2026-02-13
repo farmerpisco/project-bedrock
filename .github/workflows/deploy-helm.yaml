@@ -48,19 +48,22 @@ jobs:
         run: |
           kubectl create namespace ${{ env.NAMESPACE }} || echo "Namespace '${{ env.NAMESPACE }}' already exists"
 
-      - name: Login to Public ECR
+      - name: Deploy Frontend Chart
+        env:
+          AWS_DEFAULT_REGION: us-east-1
         run: |
           export HELM_EXPERIMENTAL_OCI=1
-
-          aws ecr-public get-login-password --region ${{ env.AWS_REGION }} | \
-            helm registry login --username AWS --password-stdin public.ecr.aws
-
+          
+          # Get token and login in one step
+          export HELM_REGISTRY_PASSWORD=$(aws ecr-public get-login-password --region us-east-1)
+          echo $HELM_REGISTRY_PASSWORD | helm registry login --username AWS --password-stdin public.ecr.aws
+          
           helm upgrade --install frontend \
-            oci://public.ecr.aws/aws-containers/retail-store-sample-ui \
+            oci://public.ecr.aws/aws-containers/retail-store-sample-ui-chart \
             --version 1.4.0 \
             --namespace ${{ env.NAMESPACE }} \
             --create-namespace \
-            -f ./ms-values/frontend-values.yaml
+            -f ./helm/ms-values/frontend-values.yaml
 
       # - name: Deploy Catalog
       #   run: |
