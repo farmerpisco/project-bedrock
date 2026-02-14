@@ -2,21 +2,19 @@ service:
   type: ClusterIP
   port: 8080
 
+mysql:
+  enabled: false
+
 env:
-  - name: RETAIL_CATALOG_PERSISTENCE_PROVIDER
-    value: mysql
+  RETAIL_CATALOG_PERSISTENCE_PROVIDER: mysql
 
-  - name: RETAIL_CATALOG_PERSISTENCE_ENDPOINT
-    value: project-bedrock-mysql2026021320562769780000000b.cmvmoygy4sqk.us-east-1.rds.amazonaws.com:3306
+  RETAIL_CATALOG_PERSISTENCE_ENDPOINT:  
 
-  - name: RETAIL_CATALOG_PERSISTENCE_DB_NAME
-    value: bedrock_catalog_db
+  RETAIL_CATALOG_PERSISTENCE_DB_NAME: bedrock_catalog_db
 
-  - name: RETAIL_CATALOG_PERSISTENCE_USER
-    value: 
+  RETAIL_CATALOG_PERSISTENCE_USER:
 
-  - name: RETAIL_CATALOG_PERSISTENCE_PASSWORD
-    value: 
+  RETAIL_CATALOG_PERSISTENCE_PASSWORD:
 
 resources:
   limits:

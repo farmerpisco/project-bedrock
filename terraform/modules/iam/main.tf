@@ -20,6 +20,14 @@ resource "aws_iam_policy" "iam_put_bucket" {
           "s3:PutObjectAcl"
         ]
         Resource = "${var.s3_bucket_arn}/*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = [
+          "eks:DescribeCluster",
+          "eks:AccessKubernetesApi"
+        ]
+        Resource = var.eks_cluster_arn
       }
     ]
   })
@@ -37,25 +45,12 @@ resource "aws_iam_access_key" "credentials" {
 
 resource "aws_iam_user_login_profile" "credentials" {
   user                    = aws_iam_user.iam_user.name
+  password_length         = 20
   password_reset_required = false
 }
 
-# Create an access entry to allow "developer user" to access the EKS cluster
-resource "aws_eks_access_entry" "pb_iam_user_view" {
+resource "aws_eks_access_entry" "dev_view_user" {
   cluster_name  = var.eks_cluster_name
   principal_arn = aws_iam_user.iam_user.arn
   type          = "STANDARD"
-}
-
-# Grant the "view" policy to "developer user"  - read-only access to cluster resources
-resource "aws_eks_access_policy_association" "pb_iam_user_view" {
-  cluster_name  = var.eks_cluster_name
-  principal_arn = aws_iam_user.iam_user.arn
-  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
-
-  access_scope {
-    type = "cluster"
-  }
-
-  depends_on = [aws_eks_access_entry.pb_iam_user_view]
 }

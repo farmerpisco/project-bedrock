@@ -32,8 +32,8 @@ helm upgrade --install dynamodb ./dynamodb -n $NAMESPACE
 echo "================================"
 
 helm upgrade --install rabbitmq ./rabbitmq -n $NAMESPACE \
---set auth.username=$DB_USERNAME \
---set auth.password=$DB_PASSWORD
+--set auth.username=$RABBITMQ_USERNAME \
+--set auth.password=$RABBITMQ_PASSWORD
 
 echo "================================"
 
@@ -50,8 +50,9 @@ oci://public.ecr.aws/aws-containers/retail-store-sample-catalog-chart  \
 --version 1.4.0   \
 --namespace $NAMESPACE \
 -f ./ms-values/catalog-values.yaml \
---set-string env[4].value=$DB_USERNAME \
---set-string env[5].value=$DB_PASSWORD
+--set-string env.RETAIL_CATALOG_PERSISTENCE_ENDPOINT=$MYSQL_ENDPOINT \
+--set-string env.RETAIL_CATALOG_PERSISTENCE_USER=$DB_USERNAME \
+--set-string env.RETAIL_CATALOG_PERSISTENCE_PASSWORD=$DB_PASSWORD
 
 echo "================================"
 
@@ -68,10 +69,11 @@ oci://public.ecr.aws/aws-containers/retail-store-sample-orders-chart  \
 --version 1.4.0   \
 --namespace $NAMESPACE \
 -f ./ms-values/orders-values.yaml \
---set-string env[4].value=$DB_USERNAME \
---set-string env[5].value=$DB_PASSWORD \
---set-string env[9].value=$DB_USERNAME \
---set-string env[10].value=$DB_PASSWORD 
+--set-string env.RETAIL_ORDERS_PERSISTENCE_ENDPOINT=$POSTGRESQL_ENDPOINT \
+--set-string env.RETAIL_ORDERS_PERSISTENCE_USER=$DB_USERNAME \
+--set-string env.RETAIL_ORDERS_PERSISTENCE_PASSWORD=$DB_PASSWORD \
+--set-string env.RETAIL_ORDERS_MESSAGING_RABBITMQ_USERNAME=$RABBITMQ_USERNAME \
+--set-string env.RETAIL_ORDERS_MESSAGING_RABBITMQ_PASSWORD=$RABBITMQ_PASSWORD 
 
 
 echo "================================"

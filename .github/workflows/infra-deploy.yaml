@@ -20,6 +20,12 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   S3_BUCKET: ${{ secrets.S3_BUCKET }}
   AWS_REGION: ${{ vars.AWS_REGION }}
+  EKS_CLUSTER_NAME: ${{ vars.EKS_CLUSTER_NAME }}
+  NAMESPACE: retail-app
+  DB_USERNAME: ${{ secrets.DB_USERNAME }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
+  RABBITMQ_USERNAME: ${{ secrets.RABBITMQ_USERNAME }}
 
  # Define jobs 
 jobs:
@@ -68,8 +74,8 @@ jobs:
           TF_VAR_cidr_block: ${{ vars.CIDR_BLOCK }}
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
           TF_VAR_instance_type: ${{ vars.INSTANCE_TYPE }}
-          TF_VAR_db_username: ${{ secrets.DB_USERNAME }}
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          TF_VAR_db_username: ${{ env.DB_USERNAME }}
+          TF_VAR_db_password: ${{ env.DB_PASSWORD }}
         run: terraform plan -input=false -out planfile
         continue-on-error: false
 
@@ -109,8 +115,8 @@ jobs:
           TF_VAR_cidr_block: ${{ vars.CIDR_BLOCK }}
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
           TF_VAR_instance_type: ${{ vars.INSTANCE_TYPE }}
-          TF_VAR_db_username: ${{ secrets.DB_USERNAME }}
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          TF_VAR_db_username: ${{ env.DB_USERNAME }}
+          TF_VAR_db_password: ${{ env.DB_PASSWORD }}
         run: terraform apply --auto-approve -input=false
 
   destroy:
@@ -149,6 +155,56 @@ jobs:
           TF_VAR_cidr_block: ${{ vars.CIDR_BLOCK }}
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
           TF_VAR_instance_type: ${{ vars.INSTANCE_TYPE }}
-          TF_VAR_db_username: ${{ secrets.DB_USERNAME }}
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          TF_VAR_db_username: ${{ env.DB_USERNAME }}
+          TF_VAR_db_password: ${{ env.DB_PASSWORD }}
         run: terraform destroy --auto-approve -input=false
+
+  deploy-helm-charts:
+    name: "Deploy Helm Charts to EKS"
+    runs-on: ubuntu-latest
+    needs: terraform-apply
+    if: needs.terraform-apply.result == 'success'
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig --name ${{ vars.EKS_CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: '3.14.0'
+
+      - name: Create namespace
+        run: |
+          kubectl create namespace retail-app || echo "Namespace 'retail-app' already exists"
+
+      - name: Login to ECR Public
+        run: |
+          aws ecr-public get-login-password --region ${{ env.AWS_REGION }} \
+          | helm registry login --username AWS --password-stdin public.ecr.aws
+
+      - name: Get terraform outputs
+        id: terraform-outputs
+        run: |
+          echo "MYSQL_ENDPOINT=$(terraform output -raw endpoint_mysql)" >> $GITHUB_ENV
+          echo "POSTGRESQL_ENDPOINT=$(terraform output -raw endpoint_postgresql)" >> $GITHUB_ENV
+
+      - name: Change to helm directory and deploy charts
+        run: |
+          cd ./helm
+          chmod +x deploy.sh
+          ./deploy.sh

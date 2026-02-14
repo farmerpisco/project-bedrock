@@ -64,3 +64,9 @@ output "port_postgresql" {
   description = "The port of the PostgreSQL RDS instance"
   value       = module.rds.port_postgresql
 }
+
+output "dev_view_console_password" {
+  description = "The console password for the IAM user"
+  value       = module.iam.dev_view_console_password
+  sensitive   = true
+}

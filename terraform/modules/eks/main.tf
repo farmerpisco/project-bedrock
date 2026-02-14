@@ -30,6 +30,8 @@ resource "aws_eks_cluster" "pb_eks_cluster" {
 
   access_config {
     authentication_mode = "API_AND_CONFIG_MAP"
+
+    bootstrap_cluster_creator_admin_permissions = true
   }
 
   enabled_cluster_log_types = [
@@ -47,6 +49,17 @@ resource "aws_eks_cluster" "pb_eks_cluster" {
 
   tags = {
     Name = "${var.project_name}-cluster"
+  }
+}
+
+resource "aws_eks_access_policy_association" "dev_view_policy" {
+  cluster_name  = aws_eks_cluster.pb_eks_cluster.name
+  principal_arn = var.iam_user_arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
+
+  access_scope {
+    type       = "namespace"
+    namespaces = ["retail-app"]
   }
 }
 

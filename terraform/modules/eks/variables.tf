@@ -22,3 +22,8 @@ variable "instance_type" {
   description = "The EC2 instance type to use for EKS worker nodes."
   type        = list(string)
 }
+
+variable "iam_user_arn" {
+  description = "ARN of the IAM user to associate with EKS access policy"
+  type        = string
+}

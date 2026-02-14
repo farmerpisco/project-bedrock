@@ -23,6 +23,23 @@ terraform {
 
 provider "aws" {
   region = var.aws_region
+
+  default_tags {
+    tags = {
+      Project = "barakat-2025-capstone"
+    }
+  }
+}
+
+provider "kubernetes" {
+  host                   = module.eks.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_ca)
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    args        = ["eks", "get-token", "--cluster-name", module.eks.eks_cluster_name]
+    command     = "aws"
+  }
 }
 
 module "networking" {
@@ -41,6 +58,7 @@ module "eks" {
   public_subnet_ids    = module.networking.pb_public_subnet_ids
   private_subnet_ids   = module.networking.pb_private_subnet_ids
   instance_type        = var.instance_type
+  iam_user_arn         = module.iam.iam_user_arn
 
 }
 
@@ -60,6 +78,7 @@ module "iam" {
 
   s3_bucket_arn    = module.storage.s3_bucket_arn
   eks_cluster_name = module.eks.eks_cluster_name
+  eks_cluster_arn  = module.eks.eks_cluster_arn
 
 }
 
