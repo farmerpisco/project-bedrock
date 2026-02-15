@@ -18,11 +18,10 @@ resource "aws_iam_policy" "cloudwatch_observability" {
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
           "logs:PutRetentionPolicy",
-          "xray:PutTraceSegments",
-          "xray:PutTelemetryRecords",
-          "cloudwatch:PutMetricData"
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:logs:*:*:log-group:/aws/eks/${var.cluster_name}/*",
+        ]
       }
     ]
   })

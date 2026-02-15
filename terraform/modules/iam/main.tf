@@ -1,6 +1,13 @@
 resource "aws_iam_user" "iam_user" {
-  name = "bedrock-dev-view"
+  name = "bedrock-dev"
 }
+
+resource "aws_iam_user_login_profile" "credentials" {
+  user                    = aws_iam_user.iam_user.name
+  password_length         = 20
+  password_reset_required = false
+}
+
 
 resource "aws_iam_user_policy_attachment" "readonly" {
   user       = aws_iam_user.iam_user.name
@@ -41,12 +48,6 @@ resource "aws_iam_policy_attachment" "attach_upload" {
 
 resource "aws_iam_access_key" "credentials" {
   user = aws_iam_user.iam_user.name
-}
-
-resource "aws_iam_user_login_profile" "credentials" {
-  user                    = aws_iam_user.iam_user.name
-  password_length         = 20
-  password_reset_required = false
 }
 
 resource "aws_eks_access_entry" "dev_view_user" {

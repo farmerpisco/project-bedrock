@@ -109,7 +109,6 @@ module "iam" {
   s3_bucket_arn    = module.storage.s3_bucket_arn
   eks_cluster_name = module.eks.eks_cluster_name
   eks_cluster_arn  = module.eks.eks_cluster_arn
-
 }
 
 module "storage" {
