@@ -1,13 +1,13 @@
 terraform {
   required_version = ">= 1.8.0"
 
-  # backend "s3" {
-  #   bucket       = "project-bedrock-state-bucket-1570"
-  #   key          = "project-bedrock/terraform.tfstate"
-  #   region       = "us-east-1"
-  #   encrypt      = true
-  #   use_lockfile = true
-  # }
+  backend "s3" {
+    bucket       = "project-bedrock-state-bucket-1570"
+    key          = "project-bedrock/terraform.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
+    use_lockfile = true
+  }
 
   required_providers {
     aws = {
