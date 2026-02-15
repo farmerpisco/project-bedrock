@@ -17,7 +17,8 @@ project-bedrock/
 |   ├── ms-values/
 |   ├── rabbitmq/
 |   ├── redis/
-|   └── deploy.sh
+|   ├── deploy.sh
+|   └── ingress.yaml
 ├── terraform/
 |   ├── bedrock_asset_processor.py
 |   ├── bedrock_asset_processor.zip
@@ -28,6 +29,7 @@ project-bedrock/
 │   └── modules/
 │       ├── eks/
 │       ├── iam/
+│       ├── ingress/
 │       ├── monitoring/
 │       ├── networking/
 |       ├── rds/
@@ -36,8 +38,10 @@ project-bedrock/
 ├── terraform-remote-backend/
 │   ├── remote-backend.tf
 │   └── variables.tf
+├── .gitignore
+├── grading.json
 ├── Project-bedrock-architecture-diagram.png
-├── README.md
+└── README.md
 ```
 ## Prerequisites
 
@@ -119,7 +123,7 @@ This ensures:
 
 ### Deployment Trigger
 
-* Any `push` to the `main` branch affecting files under `terraform/` trigger Terraform apply job and Deploy helm charts job run if terraform apply is successful.
+* Any `push` to the `main` branch affecting files under `terraform/` trigger Terraform apply job, and Deploy helm charts job runs if terraform apply job is successful.
 
 ### What the workflow does
 

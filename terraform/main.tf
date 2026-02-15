@@ -18,6 +18,10 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "~> 2.38"
     }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.0"
+    }
   }
 }
 
@@ -42,6 +46,19 @@ provider "kubernetes" {
   }
 }
 
+provider "helm" {
+  kubernetes {
+    host                   = module.eks.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_ca)
+
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--cluster-name", module.eks.eks_cluster_name]
+      command     = "aws"
+    }
+  }
+}
+
 module "networking" {
   source = "./modules/networking"
 
@@ -60,6 +77,19 @@ module "eks" {
   instance_type        = var.instance_type
   iam_user_arn         = module.iam.iam_user_arn
 
+}
+
+module "ingress" {
+  source = "./modules/ingress"
+
+  aws_region              = var.aws_region
+  project_name            = var.project_name
+  pb_vpc_id               = module.networking.pb_vpc_id
+  pb_eks_cluster_name     = module.eks.eks_cluster_name
+  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+  oidc_provider_arn       = module.eks.oidc_provider_arn
+
+  depends_on = [module.eks]
 }
 
 module "monitoring" {

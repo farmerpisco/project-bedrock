@@ -1,6 +1,7 @@
 #! /bin/bash
 
 NAMESPACE=retail-app
+
 echo "Updating kubeconfig for EKS cluster..."
 
 aws eks update-kubeconfig \
@@ -19,6 +20,11 @@ echo "================================"
 echo "Creating namespace for retail application..."
 
 kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+
+echo "================================"
+echo "Deploying Ingress resource for frontend service..."
+
+kubectl apply -f frontend-ingress.yaml
 
 echo "================================"
 echo "Deploying Redis, DynamoDB, and RabbitMQ using Helm charts..."
@@ -97,3 +103,11 @@ kubectl get pvc -n $NAMESPACE
 echo "================================"
 
 kubectl get svc -n $NAMESPACE
+
+echo "==============================="
+
+ALB_DNS=$(kubectl get ingress frontend-ingress -n $NAMESPACE \
+  -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+
+echo "ALB DNS for frontend: $ALB_DNS"
+echo "================================"
