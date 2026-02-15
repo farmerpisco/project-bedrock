@@ -35,7 +35,6 @@ resource "aws_iam_policy" "cloudwatch_observability" {
 resource "aws_iam_role" "cloudwatch_agent" {
   name = "${var.project_name}-cloudwatch-agent"
   
-  # Trust policy: Allow the Kubernetes service account to assume this role
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
