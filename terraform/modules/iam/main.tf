@@ -2,7 +2,7 @@ resource "aws_iam_user" "iam_user" {
   name = "bedrock-dev"
 }
 
-resource "aws_iam_user_login_profile" "credentials" {
+resource "aws_iam_user_login_profile" "credentialss" {
   user                    = aws_iam_user.iam_user.name
   password_length         = 10
   password_reset_required = false

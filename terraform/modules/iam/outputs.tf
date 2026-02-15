@@ -20,6 +20,6 @@ output "iam_user_arn" {
 
 output "dev_view_console_password" {
   description = "The console password for the IAM user"
-  value     = aws_iam_user_login_profile.credentials.password
+  value     = aws_iam_user_login_profile.credentialss.password
   sensitive = true
 }
