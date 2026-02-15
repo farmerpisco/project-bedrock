@@ -24,7 +24,7 @@ kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f 
 echo "================================"
 echo "Deploying Ingress resource for frontend service..."
 
-kubectl apply -f frontend-ingress.yaml
+kubectl apply -f ingress.yaml
 
 echo "================================"
 echo "Deploying Redis, DynamoDB, and RabbitMQ using Helm charts..."
