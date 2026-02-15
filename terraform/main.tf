@@ -1,13 +1,13 @@
 terraform {
   required_version = ">= 1.8.0"
 
-  backend "s3" {
-    bucket       = "project-bedrock-state-bucket-1570"
-    key          = "project-bedrock/terraform.tfstate"
-    region       = "us-east-1"
-    encrypt      = true
-    use_lockfile = true
-  }
+  # backend "s3" {
+  #   bucket       = "project-bedrock-state-bucket-1570"
+  #   key          = "project-bedrock/terraform.tfstate"
+  #   region       = "us-east-1"
+  #   encrypt      = true
+  #   use_lockfile = true
+  # }
 
   required_providers {
     aws = {
@@ -46,19 +46,6 @@ provider "kubernetes" {
   }
 }
 
-provider "helm" {
-  kubernetes {
-    host                   = module.eks.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_ca)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", module.eks.eks_cluster_name]
-      command     = "aws"
-    }
-  }
-}
-
 module "networking" {
   source = "./modules/networking"
 
@@ -78,6 +65,9 @@ module "eks" {
   iam_user_arn         = module.iam.iam_user_arn
 
 }
+
+# My AWS account is restricted from creating load balancers, 
+# so I'm skipped the ingress module which relies on the AWS Load Balancer Controller.
 
 # module "ingress" {
 #   source = "./modules/ingress"

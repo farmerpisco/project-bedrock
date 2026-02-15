@@ -21,6 +21,10 @@ resource "aws_s3_bucket" "pb_terraform_state" {
   lifecycle {
     prevent_destroy = true
   }
+
+  tags = {
+    Name        = "${var.project_name}-terraform-state-bucket"
+  }
 }
 
 # Enable versioning so I can see the full revision history of the state files
