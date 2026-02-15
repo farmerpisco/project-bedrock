@@ -27,12 +27,12 @@ env:
   RABBITMQ_PASSWORD: ${{ secrets.RABBITMQ_PASSWORD }}
   RABBITMQ_USERNAME: ${{ secrets.RABBITMQ_USERNAME }}
 
- # Define jobs 
+
 jobs:
   terraform-plan:
     name: "Terraform plan"
     runs-on: ubuntu-latest
-    # Run only on push events
+   
     if: github.event_name == 'pull_request'
 
     defaults:
@@ -118,10 +118,6 @@ jobs:
           TF_VAR_db_username: ${{ env.DB_USERNAME }}
           TF_VAR_db_password: ${{ env.DB_PASSWORD }}
         run: terraform apply --auto-approve -input=false
-
-      - name: get terraform outputs
-        id: terraform-outputs
-        run: terraform output -json
 
   destroy:
     name: "Destroy Infra with Terraform on AWS"
