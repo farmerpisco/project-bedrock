@@ -21,10 +21,10 @@ echo "Creating namespace for retail application..."
 
 kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
 
-echo "================================"
-echo "Deploying Ingress resource for frontend service..."
+# echo "================================"
+# echo "Deploying Ingress resource for frontend service..."
 
-kubectl apply -f ingress.yaml
+# kubectl apply -f ingress.yaml
 
 echo "================================"
 echo "Deploying Redis, DynamoDB, and RabbitMQ using Helm charts..."
@@ -104,18 +104,18 @@ echo "================================"
 
 kubectl get svc -n $NAMESPACE
 
-echo "==============================="
-echo "Waiting for ALB to be provisioned..."
+# echo "==============================="
+# echo "Waiting for ALB to be provisioned..."
 
-ALB_DNS=""
-while [ -z "$ALB_DNS" ]; do
-  ALB_DNS=$(kubectl get ingress frontend-ingress -n $NAMESPACE \
-    -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null)
-  if [ -z "$ALB_DNS" ]; then
-    echo "ALB not ready yet, waiting 10 seconds..."
-    sleep 10
-  fi
-done
+# ALB_DNS=""
+# while [ -z "$ALB_DNS" ]; do
+#   ALB_DNS=$(kubectl get ingress frontend-ingress -n $NAMESPACE \
+#     -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null)
+#   if [ -z "$ALB_DNS" ]; then
+#     echo "ALB not ready yet, waiting 10 seconds..."
+#     sleep 10
+#   fi
+# done
 
-echo "ALB DNS for frontend: $ALB_DNS"
+# echo "ALB DNS for frontend: $ALB_DNS"
 echo "================================"

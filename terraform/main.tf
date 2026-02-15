@@ -79,18 +79,18 @@ module "eks" {
 
 }
 
-module "ingress" {
-  source = "./modules/ingress"
+# module "ingress" {
+#   source = "./modules/ingress"
 
-  aws_region              = var.aws_region
-  project_name            = var.project_name
-  pb_vpc_id               = module.networking.pb_vpc_id
-  pb_eks_cluster_name     = module.eks.eks_cluster_name
-  cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
-  oidc_provider_arn       = module.eks.oidc_provider_arn
+#   aws_region              = var.aws_region
+#   project_name            = var.project_name
+#   pb_vpc_id               = module.networking.pb_vpc_id
+#   pb_eks_cluster_name     = module.eks.eks_cluster_name
+#   cluster_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+#   oidc_provider_arn       = module.eks.oidc_provider_arn
 
-  depends_on = [module.eks]
-}
+#   depends_on = [module.eks]
+# }
 
 module "monitoring" {
   source = "./modules/monitoring"
