@@ -1,5 +1,5 @@
 resource "aws_iam_user" "iam_user" {
-  name = "bedrock-dev"
+  name = "bedrock-dev-view"
 }
 
 resource "aws_iam_user_login_profile" "credentialss" {
