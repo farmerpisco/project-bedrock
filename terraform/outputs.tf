@@ -70,5 +70,3 @@ output "dev_view_console_password" {
   value       = module.iam.dev_view_console_password
   sensitive   = true
 }
-
-#
