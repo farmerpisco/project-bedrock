@@ -2,7 +2,7 @@
   "access_key_id": {
     "sensitive": true,
     "type": "string",
-    "value": "AKIAVNZTUQZHHSBCJBIO"
+    "value": "AKIAVNZTUQZHMTJZJIRR"
   },
   "aws_region": {
     "sensitive": false,
@@ -12,7 +12,7 @@
   "dev_view_console_password": {
     "sensitive": true,
     "type": "string",
-    "value": "lW7VtMBdP-lXunmfAI$I"
+    "value": "kszjr6)!VM"
   },
   "eks_cluster_endpoint": {
     "sensitive": false,
@@ -37,7 +37,7 @@
   "iam_username": {
     "sensitive": false,
     "type": "string",
-    "value": "bedrock-dev"
+    "value": "bedrock-dev-view"
   },
   "lambda_function_name": {
     "sensitive": false,
@@ -62,7 +62,7 @@
   "secret_key": {
     "sensitive": true,
     "type": "string",
-    "value": "57D1R3LlPZzAzaOB0GeQNHvmoGQ3LieeWW/TIJsq"
+    "value": "CQhkHG4ok/MWeA9VRfoaH9XIZ0AxgjCU12ZqGMQY"
   },
   "vpc_name": {
     "sensitive": false,

@@ -40,6 +40,16 @@ resource "aws_iam_policy" "iam_put_bucket" {
   })
 }
 
+resource "aws_eks_access_policy_association" "dev_view_policy" {
+  cluster_name  = var.eks_cluster_name
+  principal_arn = aws_iam_user.iam_user.arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
 resource "aws_iam_policy_attachment" "attach_upload" {
   name       = "attach-upload-policy"
   policy_arn = aws_iam_policy.iam_put_bucket.arn
