@@ -165,9 +165,17 @@ jobs:
     needs: terraform-apply
     if: needs.terraform-apply.result == 'success'
 
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./terraform
+
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -175,6 +183,16 @@ jobs:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform init
+        id: init
+        run: terraform init -backend-config="bucket=$S3_BUCKET"
+
+      - name: Get terraform outputs
+        id: terraform-outputs
+        run: |
+          echo "MYSQL_ENDPOINT=$(terraform output -raw endpoint_mysql)" >> $GITHUB_ENV
+          echo "POSTGRESQL_ENDPOINT=$(terraform output -raw endpoint_postgresql)" >> $GITHUB_ENV
 
       - name: Setup kubectl
         uses: azure/setup-kubectl@v3
@@ -197,14 +215,8 @@ jobs:
           aws ecr-public get-login-password --region ${{ env.AWS_REGION }} \
           | helm registry login --username AWS --password-stdin public.ecr.aws
 
-      - name: Get terraform outputs
-        id: terraform-outputs
-        run: |
-          echo "MYSQL_ENDPOINT=$(terraform output -raw endpoint_mysql)" >> $GITHUB_ENV
-          echo "POSTGRESQL_ENDPOINT=$(terraform output -raw endpoint_postgresql)" >> $GITHUB_ENV
-
       - name: Change to helm directory and deploy charts
         run: |
-          cd ./helm
+          cd ../helm
           chmod +x deploy.sh
           ./deploy.sh
