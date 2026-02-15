@@ -4,7 +4,7 @@ resource "aws_iam_user" "iam_user" {
 
 resource "aws_iam_user_login_profile" "credentials" {
   user                    = aws_iam_user.iam_user.name
-  password_length         = 20
+  password_length         = 10
   password_reset_required = false
 }
 
